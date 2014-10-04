@@ -4,7 +4,7 @@
 __author__="ealdor"
 __date__ ="$27-sep-2014 21:03:25$"
 
-import libtcodpy as libtcod
+import libtcod.libtcodpy as libtcod
 import sys
 import struct
 import cPickle as pickle

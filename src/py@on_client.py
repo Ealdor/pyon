@@ -7,7 +7,7 @@ __date__ ="$27-sep-2014 10:09:37$"
 import socket
 import sys
 import threading
-import libtcodpy as libtcod
+import libtcod.libtcodpy as libtcod
 import select
 
 import server_utils
