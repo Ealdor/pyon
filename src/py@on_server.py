@@ -28,7 +28,8 @@ class ClientThread(threading.Thread):
         aux = server_utils.Object(random.randint(1, serverMap.width-2), random.randint(1, serverMap.height-2), '@') # creamos al jugador
         connection_list.append({"connection": self.connection, "address": self.address, "player": aux}) # añadimos al jugador a la lista
         for client in connection_list: # mandamos el jugador a todos y a nosotros todos los de la lista
-            server_utils.send_msg(self.connection, {"type": "ADD", "player": client.get("player"), "address": client.get("address")})
+            if client.get("address") != self.address:
+                server_utils.send_msg(self.connection, {"type": "ADD", "player": client.get("player"), "address": client.get("address")})
             server_utils.send_msg(client.get("connection"), {"type": "ADD", "player": aux, "address": self.address})
     def run(self):
         global connection_list
@@ -88,8 +89,7 @@ class QueueThread(threading.Thread):
         global connection_list
         while True:
             data_queue = global_queue.get()
-            for client in connection_list:
-                server_utils.send_msg(client.get("connection"), data_queue)
+            [server_utils.send_msg(client.get("connection"), data_queue) for client in connection_list]
 
 # función que inicializa el servidor
 def init_server():

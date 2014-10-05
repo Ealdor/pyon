@@ -54,9 +54,7 @@ def process_data(data):
         if type == "ADD": # si es un mensaje de cliente nuevo conectado
             connection_list.append({"address": data.get("address"), "player": data.get("player")})
         elif type == "UPDATE": # si es un mensaje de actualizacion de cliente (solo movimiento de momento)
-            for client in connection_list:
-                if client.get("address") == data.get("address"):
-                    client["player"] = data.get("player")
+            client["player"] = [data.get("player") for client in connection_list if client.get("address") == data.get("address")][0]
         elif type == "DELETE":  # si es un mensaje de desconexión de un cliente
             connection_list.pop(next(index for (index, d) in enumerate(connection_list) if d["address"] == data.get("address")))
         connection_list_lock.release()
@@ -65,6 +63,7 @@ def process_data(data):
 # función que inicializa libtcod y se conecta al servidor
 def init_client(arg):
     server_utils.init_libtcod() # inicializamos libtcod
+    libtcod.sys_set_fps(30) # limitar los FPS a 30
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) # crea un nuevo TCP/IP socket (familia, tipo y protocolo)
     server_address = (arg[1], int(arg[2])) # conectarse a un socket remoto ((host, puerto) 127.0.0.1:50215
     try:
@@ -113,12 +112,8 @@ def handle_keys():
 def draw_all():
     clientMap.draw_map() # dibujamos el mapa
     connection_list_lock.acquire()
-    for client in connection_list: # dibujamos los clientes
-        player = client.get('player')
-        player.draw(clientMap)
-    for client in connection_list: # limpiamos los clientes
-        player = client.get('player')
-        player.clear(clientMap)
+    [client.get('player').draw(clientMap) for client in connection_list] # dibujamos los clientes
+    [client.get('player').clear(clientMap) for client in connection_list] # limpiamos los clientes
     connection_list_lock.release()
     if clientChat.enabled:
         clientChat.draw_box() # dibujamos el chatbox
