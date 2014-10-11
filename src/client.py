@@ -67,11 +67,11 @@ class Client():
     def __init__(self, add):
         self.init_client(add)
         self.init_map()
-        self.init_chat()
+        self.init_chat(add)
         self.st = ServerThread(self.clientSock) # creamos el thread del cliente para empezar a recibir
     def init_client(self, add):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) # crea un nuevo TCP/IP socket (familia, tipo y protocolo)
-        server_address = (add[0], int(add[1])) # conectarse a un socket remoto ((host, puerto) 127.0.0.1:50215
+        server_address = (add[0][0], int(add[0][1])) # conectarse a un socket remoto ((host, puerto) 127.0.0.1:50215
         try:
             sock.connect(server_address)
         except:
@@ -81,9 +81,9 @@ class Client():
     def init_map(self):
         self.clientMap = utils.recv_msg(self.clientSock)
         self.clientMap.console = libtcod.console_new(self.clientMap.width, self.clientMap.height)
-    def init_chat(self):
+    def init_chat(self, add):
         global global_clientChat
-        self.clientChat = objects.Chat()
+        self.clientChat = objects.Chat(add[1])
         global_clientChat = self.clientChat
     def draw(self):
         global connection_list
@@ -112,7 +112,7 @@ class Client():
             else: # si el chat está habilitado
                 if key.vk == libtcod.KEY_ENTER: # mandamos la cadena si no está vacía
                     if self.clientChat.string != "":
-                        utils.send_msg(self.clientSock, self.clientChat.string)
+                        utils.send_msg(self.clientSock, self.clientChat.name+self.clientChat.string)
                         self.st.server_response = False
                     self.clientChat.reset()
                 elif key.c != 0: # escribimos en el chatbox

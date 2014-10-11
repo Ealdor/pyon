@@ -75,11 +75,12 @@ class Object():
 
 # clase que representa el chat
 class Chat():
-    def __init__(self):
+    def __init__(self, name):
         self.width = (31 * ROOT_WIDTH) / 100 # 30%
         self.height = (60 * ROOT_HEIGHT) / 100 # 60%
         self.console = libtcod.console_new(self.width, self.height)
         self.enabled = False
+        self.name = name+": "
         self.string = ""
         self.lines = []
         self.count = 0
@@ -108,7 +109,7 @@ class Chat():
             libtcod.console_print_ex(self.console, 1, 40, libtcod.BKGND_NONE, libtcod.LEFT, self.string[60:90])
         libtcod.console_blit(self.console, 0, 0, 0, 0, 0, ROOT_WIDTH-self.width, 0, 1.0, 1.0)
     def buffer(self, char):
-        if len(self.string) <= 89:
+        if len(self.string)+len(self.name) <= 89:
             if char == 8: # borrar
                 self.string = self.string[:-1]
             else:
@@ -200,7 +201,7 @@ class MainScreen():
         self.active = False
         libtcod.console_clear(self.console)
         libtcod.console_blit(self.console, 0, 0, 0, 0, 0, 0, 0, 1.0, 1.0)
-        self.data = string.split(self.options[1].content, ":")
+        self.data = (string.split(self.options[1].content, ":"), self.options[0].content)
 
     def process(self, char):
         for option in self.options:

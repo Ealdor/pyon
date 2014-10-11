@@ -80,7 +80,12 @@ class QueueThread(threading.Thread):
         global connection_list
         while True:
             data_queue = global_queue.get()
-            [utils.send_msg(client.get("connection"), data_queue) for client in connection_list]
+            for client in connection_list:
+                try:
+                    utils.send_msg(client.get("connection"), data_queue)
+                    #[utils.send_msg(client.get("connection"), data_queue) for client in connection_list]
+                except:
+                    client.get("connection").close()
 
 class Server():
     def __init__(self):
