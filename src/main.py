@@ -29,6 +29,5 @@ if __name__ == "__main__":
 		if exit == 0:
 			break
 		elif exit == 1:
-			print ms.data
 			cl = client.Client(ms.data) # "127.0.0.1", "50215"
 	sys.exit()

@@ -90,7 +90,7 @@ class QueueThread(threading.Thread):
 class Server():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) # crea un nuevo TCP/IP socket (familia, tipo y protocolo)
-        self.server_address = ('localhost', 50215) # enlaza el socket a una dirección ((host, puerto)
+        self.server_address = ('', 50215) # enlaza el socket a una dirección ((host, puerto)
         self.sock.bind(self.server_address)
         self.init_map()
     def init_map(self):
